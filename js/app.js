@@ -46,8 +46,12 @@
     timerSeconds: store.get(STORAGE_KEYS.timerSeconds, 60),
     timeLeft: 60,
     timerInterval: null,
-    soundOn: store.get(STORAGE_KEYS.soundOn, true),
-    musicOn: store.get(STORAGE_KEYS.musicOn, false),
+    // Sound effects (click/correct/wrong/hint/etc.) default OFF — this build is
+    // background-music-only. The Settings toggle still lets a player turn them on.
+    soundOn: store.get(STORAGE_KEYS.soundOn, false),
+    // Background music defaults ON, so the Game of Thrones theme starts as soon
+    // as the browser allows audio (first tap/click — see init() at the bottom).
+    musicOn: store.get(STORAGE_KEYS.musicOn, true),
     volume: store.get(STORAGE_KEYS.volume, 70),
     darkMode: store.get(STORAGE_KEYS.darkMode, false),
     difficulty: store.get(STORAGE_KEYS.difficulty, "All"),
