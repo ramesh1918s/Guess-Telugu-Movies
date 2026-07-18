@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#0b0b10">
+<title>Cinema Guess — Telugu Movie Guess Game</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;700;800&family=Poppins:wght@400;500;600;700&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<!-- ============================ CINEMATIC BACKDROP ========================== -->
+<div class="cinema-bg" id="cinema-bg" aria-hidden="true">
+  <div class="cinema-bg-image"></div>
+  <div class="cinema-bg-gradient"></div>
+  <div class="cinema-bg-vignette"></div>
+  <div class="cinema-spotlight spotlight-a"></div>
+  <div class="cinema-spotlight spotlight-b"></div>
+  <div class="film-grain"></div>
+</div>
+
+<div class="particles-layer" id="particles-layer" aria-hidden="true"></div>
+
+<!-- toast -->
+<div id="toast" class="toast" role="status" aria-live="polite"></div>
+
+<!-- ============================= HOME SCREEN ============================= -->
+<section id="screen-home" class="screen active">
+  <button class="icon-btn music-toggle" id="btn-music" aria-pressed="false" title="Background music">🔇</button>
+
+  <div class="marquee-frame glass glow-border" data-parallax="1.2">
+    <div class="hero-ornaments" aria-hidden="true" data-parallax="0.7">
+      <div class="curtain curtain-left"></div>
+      <div class="curtain curtain-right"></div>
+      <div class="spotlight-beam"></div>
+      <div class="film-strip film-strip-top"></div>
+      <div class="film-strip film-strip-bottom"></div>
+      <div class="floating-poster poster-mini poster-mini-a">🎬</div>
+      <div class="floating-poster poster-mini poster-mini-b">📽️</div>
+      <div class="camera-lens"></div>
+      <div class="lens-glow"></div>
+    </div>
+
+    <div class="reel-icon reel-left" aria-hidden="true">🎞️</div>
+    <div class="reel-icon reel-right" aria-hidden="true">🎬</div>
+
+    <p class="eyebrow">🎬 single screen · house full</p>
+    <h1 class="title-display">Cinema<span class="title-accent">Guess</span></h1>
+    <p class="subtitle">Emoji clues. Blurry posters. One guess at a time — how deep is your Tollywood knowledge?</p>
+
+    <div class="home-hero-meta" aria-label="Game highlights">
+      <span>🎬 50 blockbuster clues</span>
+      <span>⏱️ 90s countdown</span>
+      <span>🏆 local leaderboard</span>
+    </div>
+
+    <div class="home-stats">
+      <div class="stat-pill">
+        <span class="stat-label">High Score</span>
+        <span class="stat-value" id="home-highscore">0</span>
+      </div>
+      <div class="stat-pill">
+        <span class="stat-label">Best Streak</span>
+        <span class="stat-value" id="home-beststreak">0</span>
+      </div>
+    </div>
+
+    <div class="home-actions">
+      <button class="btn btn-primary btn-lg" id="btn-start">▶ Start Game</button>
+      <button class="btn btn-ghost" id="btn-leaderboard">🏆 Leaderboard</button>
+      <div class="home-actions-row">
+        <button class="btn btn-ghost" id="btn-howto">❓ How to Play</button>
+        <button class="btn btn-ghost" id="btn-settings">⚙ Settings</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================= HOW TO PLAY ============================= -->
+<section id="screen-howto" class="screen">
+  <div class="panel glass glow-border">
+    <h2 class="panel-title">How to Play</h2>
+    <div class="howto-grid">
+      <div class="howto-item">
+        <span class="howto-icon">🎞️</span>
+        <h3>Read the clues</h3>
+        <p>Every round gives you 3 emoji clues and 3 poster panels for one Telugu movie.</p>
+      </div>
+      <div class="howto-item">
+        <span class="howto-icon">⌨️</span>
+        <h3>Type your guess</h3>
+        <p>Spelling wobbles, spacing and capitals are all forgiven — we're lenient graders.</p>
+      </div>
+      <div class="howto-item">
+        <span class="howto-icon">💡</span>
+        <h3>Stuck? Use a hint</h3>
+        <p>Reveals Hero → Director → Year → Story hint, one at a time. Each reveal costs <b>−3</b> points.</p>
+      </div>
+      <div class="howto-item">
+        <span class="howto-icon">⏱️</span>
+        <h3>Beat the clock</h3>
+        <p>01:30 per round. The ring glows green, then amber, then red as time runs low. Run out and the movie moves on without you.</p>
+      </div>
+      <div class="howto-item">
+        <span class="howto-icon">❤️</span>
+        <h3>Guard your lives</h3>
+        <p>You start with 3 lives. A wrong answer costs one life. Lose all three and it's game over.</p>
+      </div>
+      <div class="howto-item">
+        <span class="howto-icon">🏆</span>
+        <h3>Scoring</h3>
+        <p>Correct <b>+10</b> · Wrong <b>−2</b> · Hint <b>−3</b> · Skip <b>−5</b>. Chain correct answers for a streak.</p>
+      </div>
+    </div>
+    <button class="btn btn-primary" id="btn-howto-back">Got it</button>
+  </div>
+</section>
+
+<!-- ============================== SETTINGS =============================== -->
+<section id="screen-settings" class="screen">
+  <div class="panel glass glow-border panel-narrow">
+    <h2 class="panel-title">Settings</h2>
+
+    <div class="settings-row">
+      <div>
+        <p class="settings-label">Master audio</p>
+        <p class="settings-sub">Mute or unmute all game sounds</p>
+      </div>
+      <button class="toggle" id="toggle-audio" aria-pressed="false"><span class="toggle-knob"></span></button>
+    </div>
+
+    <div class="settings-row">
+      <div>
+        <p class="settings-label">Sound effects</p>
+        <p class="settings-sub">Correct / wrong / click cues</p>
+      </div>
+      <button class="toggle" id="toggle-sound" aria-pressed="true"><span class="toggle-knob"></span></button>
+    </div>
+
+    <div class="settings-row">
+      <div>
+        <p class="settings-label">Background music</p>
+        <p class="settings-sub">Soft ambient theatre loop</p>
+      </div>
+      <button class="toggle" id="toggle-music" aria-pressed="false"><span class="toggle-knob"></span></button>
+    </div>
+
+    <div class="settings-row settings-row-col">
+      <div>
+        <p class="settings-label">Volume</p>
+        <p class="settings-sub">Master volume for effects &amp; music</p>
+      </div>
+      <input type="range" id="volume-slider" class="volume-slider" min="0" max="100" value="70" aria-label="Volume">
+    </div>
+
+    <div class="settings-row">
+      <div>
+        <p class="settings-label">Round timer</p>
+        <p class="settings-sub">Time per movie</p>
+      </div>
+      <div class="segmented" id="timer-options">
+        <button class="segment" data-seconds="60">1:00</button>
+        <button class="segment active" data-seconds="90">1:30</button>
+        <button class="segment" data-seconds="120">2:00</button>
+      </div>
+    </div>
+
+    <div class="settings-row">
+      <div>
+        <p class="settings-label">Difficulty</p>
+        <p class="settings-sub">Which movies show up in your deck</p>
+      </div>
+      <div class="segmented" id="difficulty-options">
+        <button class="segment active" data-difficulty="All">All</button>
+        <button class="segment" data-difficulty="Easy">Easy</button>
+        <button class="segment" data-difficulty="Medium">Medium</button>
+        <button class="segment" data-difficulty="Hard">Hard</button>
+      </div>
+    </div>
+
+    <div class="settings-row">
+      <div>
+        <p class="settings-label">Dark theatre mode</p>
+        <p class="settings-sub">Extra-dim contrast for night play</p>
+      </div>
+      <button class="toggle" id="toggle-darkmode" aria-pressed="false"><span class="toggle-knob"></span></button>
+    </div>
+
+    <div class="settings-row">
+      <div>
+        <p class="settings-label">Reset progress</p>
+        <p class="settings-sub">Clears high score, best streak &amp; leaderboard</p>
+      </div>
+      <button class="btn btn-danger btn-small" id="btn-reset">Reset</button>
+    </div>
+
+    <button class="btn btn-primary" id="btn-settings-back">Save &amp; Close</button>
+  </div>
+</section>
+
+<!-- ============================= LEADERBOARD ============================= -->
+<section id="screen-leaderboard" class="screen">
+  <div class="panel glass glow-border panel-narrow">
+    <h2 class="panel-title">🏆 Leaderboard</h2>
+    <p class="leaderboard-sub">Your best runs on this device.</p>
+    <div class="leaderboard-list" id="leaderboard-list">
+      <!-- rows injected here -->
+    </div>
+    <button class="btn btn-primary" id="btn-leaderboard-back">Back Home</button>
+  </div>
+</section>
+
+<!-- =============================== GAME =================================== -->
+<section id="screen-game" class="screen">
+  <div class="game-wrap">
+
+    <!-- top bar -->
+    <div class="game-topbar glass">
+      <div class="lives" id="lives-display" aria-label="Lives remaining">
+        <span class="life">❤️</span><span class="life">❤️</span><span class="life">❤️</span>
+      </div>
+
+      <div class="progress-track" aria-label="Movies completed">
+        <div class="progress-fill" id="progress-fill"></div>
+        <span class="progress-label" id="progress-label">Movie 1 / 10</span>
+      </div>
+
+      <div class="timer-wrap" id="timer-wrap">
+        <svg class="timer-ring" viewBox="0 0 100 100">
+          <circle class="timer-ring-bg" cx="50" cy="50" r="42"></circle>
+          <circle class="timer-ring-bulbs" cx="50" cy="50" r="42"></circle>
+          <circle class="timer-ring-fg" id="timer-ring-fg" cx="50" cy="50" r="42"></circle>
+        </svg>
+        <span class="timer-number" id="timer-number">01:30</span>
+      </div>
+    </div>
+
+    <!-- score bar -->
+    <div class="score-bar glass">
+      <div class="score-item"><span class="score-label">Score</span><span class="score-value" id="score-current">0</span></div>
+      <div class="score-item"><span class="score-label">Best</span><span class="score-value" id="score-best">0</span></div>
+      <div class="score-item"><span class="score-label">Streak</span><span class="score-value" id="streak-current">0 🔥</span></div>
+      <div class="score-item"><span class="score-label">Best Streak</span><span class="score-value" id="streak-best">0</span></div>
+    </div>
+
+    <!-- movie card -->
+    <div class="movie-card glass glow-border" id="movie-card" data-parallax="0.45">
+      <span class="difficulty-badge" id="difficulty-badge">Easy</span>
+
+      <div class="poster-strip" id="poster-strip"><!-- 3 posters injected here --></div>
+
+      <div class="emoji-row" id="emoji-row"><!-- 3 emoji clues injected here --></div>
+
+      <div class="hints-box" id="hints-box">
+        <p class="hints-empty" id="hints-empty">No hints revealed yet. Tap "Reveal Hint" if you're stuck.</p>
+      </div>
+
+      <form class="guess-form" id="guess-form" autocomplete="off">
+        <input type="text" id="guess-input" placeholder="Type the movie name…" maxlength="40" aria-label="Your guess">
+        <button type="submit" class="btn btn-primary btn-guess">Guess</button>
+      </form>
+
+      <div class="action-row">
+        <button class="btn btn-ghost" id="btn-hint">💡 Reveal Hint <span class="cost">−3</span></button>
+        <button class="btn btn-ghost" id="btn-skip">⏭ Skip <span class="cost">−5</span></button>
+        <button class="btn btn-ghost" id="btn-reveal-name">🎬 Show Name</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="confetti-layer" id="confetti-layer" aria-hidden="true"></div>
+</section>
+
+<!-- ============================= GAME OVER ================================ -->
+<section id="screen-gameover" class="screen">
+  <div class="panel glass glow-border panel-narrow gameover-panel">
+    <h2 class="panel-title" id="gameover-title">Game Over</h2>
+    <p class="gameover-sub" id="gameover-sub">You ran out of lives.</p>
+
+    <div class="gameover-stats">
+      <div class="gameover-stat">
+        <span class="go-label">Final Score</span>
+        <span class="go-value" id="go-score">0</span>
+      </div>
+      <div class="gameover-stat">
+        <span class="go-label">Correct</span>
+        <span class="go-value" id="go-correct">0</span>
+      </div>
+      <div class="gameover-stat">
+        <span class="go-label">Wrong</span>
+        <span class="go-value" id="go-wrong">0</span>
+      </div>
+      <div class="gameover-stat">
+        <span class="go-label">Accuracy</span>
+        <span class="go-value" id="go-accuracy">0%</span>
+      </div>
+      <div class="gameover-stat">
+        <span class="go-label">Time Played</span>
+        <span class="go-value" id="go-time">0:00</span>
+      </div>
+      <div class="gameover-stat">
+        <span class="go-label">Best Streak</span>
+        <span class="go-value" id="go-beststreak">0</span>
+      </div>
+    </div>
+
+    <p class="gameover-newbest" id="gameover-newbest" hidden>🏆 New High Score!</p>
+
+    <div class="gameover-actions">
+      <button class="btn btn-primary" id="btn-play-again">🔁 Play Again</button>
+      <button class="btn btn-ghost" id="btn-home">🏠 Home</button>
+    </div>
+  </div>
+</section>
+
+<!-- =============================== WIN SCREEN ============================== -->
+<section id="screen-win" class="screen">
+  <div class="panel glass glow-border panel-narrow win-panel">
+    <div class="clapboard" id="clapboard" aria-hidden="true">
+      <div class="clapboard-top"></div>
+      <div class="clapboard-body">🎬</div>
+    </div>
+    <h2 class="panel-title win-title">Blockbuster Win!</h2>
+    <p class="gameover-sub">You cleared the whole lineup. Roll credits!</p>
+
+    <div class="star-rating" id="star-rating">
+      <span class="star">⭐</span><span class="star">⭐</span><span class="star">⭐</span><span class="star">⭐</span><span class="star">⭐</span>
+    </div>
+
+    <div class="win-score-counter" id="win-score-counter">0</div>
+    <p class="win-score-label">Final Score</p>
+
+    <div class="gameover-stats">
+      <div class="gameover-stat">
+        <span class="go-label">Best Streak</span>
+        <span class="go-value" id="win-beststreak">0</span>
+      </div>
+      <div class="gameover-stat">
+        <span class="go-label">High Score</span>
+        <span class="go-value" id="win-highscore">0</span>
+      </div>
+    </div>
+
+    <div class="gameover-actions">
+      <button class="btn btn-primary" id="btn-win-play-again">🔁 Play Again</button>
+      <button class="btn btn-ghost" id="btn-win-share">📤 Share Score</button>
+      <button class="btn btn-ghost" id="btn-win-home">🏠 Home</button>
+    </div>
+  </div>
+  <div class="confetti-layer" id="confetti-layer-win" aria-hidden="true"></div>
+  <div class="fireworks-layer" id="fireworks-layer" aria-hidden="true"></div>
+</section>
+
+<script src="js/movies.js"></script>
+<script src="js/app.js"></script>
+</body>
+</html>
